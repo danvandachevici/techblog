@@ -1,0 +1,78 @@
+service: techblog
+
+useDotenv: true
+
+plugins:
+  - serverless-dynamodb-local
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+  stage: ${env:ENVIRONMENT}
+  memorySize: 512
+  stackName: ${env:SERVICE_NAME}-${env:ENVIRONMENT}-stack
+  iam:
+    role: arn:aws:iam::#{AWS::AccountId}:role/${env:SERVICE_NAME}-lambda
+
+  environment:
+    DDB_TECHBLOG_TABLE: ${env:DDB_TECHBLOG_TABLE}
+
+# functions:
+#   main: # The name of the lambda function
+#     # The module 'handler' is exported in the file 'src/lambda'
+#     handler: src/lambda.handler
+#     events:
+#       - http:
+#           method: any
+#           path: /{any+}
+
+resources:
+  Resources:
+    techblog:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:DDB_TECHBLOG_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+          - AttributeName: publishedAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: published-index
+            KeySchema:
+              - AttributeName: publishedAt
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: inverted-index
+            KeySchema:
+              - AttributeName: sk
+                KeyType: HASH
+              - AttributeName: pk
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+custom:
+  dynamodb:
+    # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - development
+    start:
+      # port: 8000
+      # inMemory: true
+      # heapInitial: 200m
+      # heapMax: 1g
+      # migrate: true
+      # seed: true
+      # convertEmptyValues: true
+    # Uncomment only if you already have a DynamoDB running locally
+    # noStart: true
