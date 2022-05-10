@@ -5,12 +5,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const graphqlClient = GraphQLService.getInstance();
 
-  return graphqlClient.getLatestPosts().then((posts) => {
+  const pageNumber: number = parseInt(req.query.page as string || "0", 10);
+
+  return graphqlClient.getLatestPosts(pageNumber, 10).then((posts) => {
     res.setHeader("Content-Type", "application/json");
     res.status(200).json({ posts })
   }).catch((exp) => {
-    console.log('Exception in api:', exp);
-    
+    console.error('Exception in api:', exp);
   });
-  
 }

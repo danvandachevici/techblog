@@ -14,7 +14,7 @@ query pageListingQuery($count: Int = 10, $skip: Int = 0){
 
 export const latestPostsQuery = /* GraphQL */`
 query getLatestPosts($count: Int = 10) {
-  postContentCollection(limit: $count, order:sys_publishedAt_DESC) {
+  postContentCollection(limit: $count, order:sys_firstPublishedAt_DESC) {
     items {
       sys {
         publishedAt
@@ -48,7 +48,7 @@ query getPage ($url: String!) {
     items {
       sys {
         id
-        publishedAt
+        firstPublishedAt
       }
       seoIndex
       seoFollow
@@ -58,6 +58,18 @@ query getPage ($url: String!) {
           hiddenTitle
           featuredPostsCollection(limit:5) {
             items {
+              sys {
+                id
+                updatedAt: publishedAt
+                publishedAt: firstPublishedAt
+              }
+              linkedFrom {
+                pageCollection {
+                  items {
+                    url
+                  }
+                }
+              }
               title
               heroImage {
                 image {url}

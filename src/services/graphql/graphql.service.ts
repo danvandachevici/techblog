@@ -33,14 +33,9 @@ export class GraphQLService {
 
   getLatestPosts(page: number = 0, pageSize: number = 10): Promise<any> {
     return this._graphqlRequest(latestPostsQuery, {count: pageSize, skip: page * pageSize})
-      .then(res => {
-        console.log('cijosacijacjioas', res.data.data.postContentCollection);
-        
-        return res.data.data.postContentCollection.items
-      })
+      .then(res => res.data.data.postContentCollection.items)
       .catch((exp: any) => {
-        console.log('Graphql exception:', exp.response.data);
-        
+        console.error('Graphql exception:', exp.response.data);
       });
   };
 
@@ -48,7 +43,7 @@ export class GraphQLService {
     return this._graphqlRequest(pageByUrlQuery, {url}).then((res) => {      
       return res.data.data.pageCollection.items[0];
     }).catch((exp: any) => {
-      console.log('weird exception:', exp.response.data);
+      console.error('weird exception:', JSON.stringify(exp.response.data.errors, null, 2));
     });
   }
 

@@ -56,13 +56,14 @@ export function getStaticProps(context:any) {
   }
   
   return graphqlService.getPageByUrl(url).then((data) => {
+    
     return {
       props: {
         ...data
       },
     };
   }).catch((exp) => {
-    console.log('exception fetching data', exp);
+    console.error('exception fetching data', exp);
     return {
       props: {
         content: {
