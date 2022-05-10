@@ -12,6 +12,36 @@ query pageListingQuery($count: Int = 10, $skip: Int = 0){
 }
 `.replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/gm, ' ');
 
+export const latestPostsQuery = /* GraphQL */`
+query getLatestPosts($count: Int = 10) {
+  postContentCollection(limit: $count, order:sys_publishedAt_DESC) {
+    items {
+      sys {
+        publishedAt
+        id
+      }
+      title
+      heroImage {
+        image {
+          url
+        }
+        alternativeText
+      }
+      standfirst {
+        json
+      }
+      linkedFrom{
+        pageCollection(limit:1){
+          items {
+            url
+          }
+        }
+      }
+    }
+  }
+}
+`.replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/gm, ' ');
+
 export const pageByUrlQuery = /* GraphQL */`
 query getPage ($url: String!) {
   pageCollection(limit:1, where:{url: $url}) {
@@ -23,8 +53,8 @@ query getPage ($url: String!) {
       seoIndex
       seoFollow
       content {
+        __typename
         ...on HomeContent {
-          __typename
           hiddenTitle
           featuredPostsCollection(limit:5) {
             items {
@@ -39,6 +69,13 @@ query getPage ($url: String!) {
                   entries {
                     inline {
                       ...on PostContent {
+                        title
+                        heroImage {
+                          image {
+                            url
+                          }
+                          alternativeText
+                        }
                         linkedFrom {
                           pageCollection(limit:1) {
                             items {
@@ -50,6 +87,33 @@ query getPage ($url: String!) {
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+
+        ...on PostContent {
+          title
+          heroImage {
+            image {
+              url
+            }
+            alternativeText
+          }
+          standfirst {
+            json
+          }
+          content {
+            json
+          }
+          authorsCollection (limit:2){
+            items {
+              name
+              avatar {
+                image {
+                  url
+                }
+                alternativeText
               }
             }
           }

@@ -26,9 +26,14 @@ const contentMapping: any = {
     const Homepage = require('../templates/Homepage').default;
     return <Homepage data={data} />;
   },
+  PostContent: (data: any) => {
+    const Post = require('../templates/Post').default;
+    return <Post data={data} />;
+  }
 }
 
 export default function PageComponent(data: any) {
+  
   if (
     !!data &&
     !!data.content &&

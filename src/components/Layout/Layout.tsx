@@ -1,6 +1,6 @@
 import Menu from '../Menu/Menu';
 
-export default function Layout({ children }) {
+export default function Layout({ children }: React.PropsWithChildren<{}>) {
   return (
     <>
       <div>

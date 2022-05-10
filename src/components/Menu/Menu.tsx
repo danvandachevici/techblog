@@ -10,8 +10,6 @@ export default function Menu() {
       <ul>
         <li><Link href='/'>Home</Link></li>
         <li><Link href='/posts'>Latest</Link></li>
-
-        {token !== '' && <li><Link href='/admin'>Admin</Link></li> }
       </ul>
     </nav>
   )

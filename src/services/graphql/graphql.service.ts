@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { pageByUrlQuery, pageListingQuery } from './queries';
+import { latestPostsQuery, pageByUrlQuery, pageListingQuery } from './queries';
 
 export class GraphQLService {
   static instance: GraphQLService;
@@ -13,7 +13,7 @@ export class GraphQLService {
     return GraphQLService.instance;
   }
 
-  private _graphqlRequest(query: string, variables: any): Promise<any> {
+  private _graphqlRequest(query: string, variables?: any): Promise<any> {
     const graphqlUrl: string = process.env.CONTENT_URL || '';
     const graphqlAuth: string = process.env.CONTENT_DELIVERY_API_KEY || '';
 
@@ -31,11 +31,24 @@ export class GraphQLService {
     });
   }
 
+  getLatestPosts(page: number = 0, pageSize: number = 10): Promise<any> {
+    return this._graphqlRequest(latestPostsQuery, {count: pageSize, skip: page * pageSize})
+      .then(res => {
+        console.log('cijosacijacjioas', res.data.data.postContentCollection);
+        
+        return res.data.data.postContentCollection.items
+      })
+      .catch((exp: any) => {
+        console.log('Graphql exception:', exp.response.data);
+        
+      });
+  };
+
   getPageByUrl(url: string): Promise<any> {
-    return this._graphqlRequest(pageByUrlQuery, {url}).then((res) => {
+    return this._graphqlRequest(pageByUrlQuery, {url}).then((res) => {      
       return res.data.data.pageCollection.items[0];
     }).catch((exp: any) => {
-      console.log(exp.response.data);
+      console.log('weird exception:', exp.response.data);
     });
   }
 
