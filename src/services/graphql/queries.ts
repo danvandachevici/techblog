@@ -12,6 +12,29 @@ query pageListingQuery($count: Int = 10, $skip: Int = 0){
 }
 `.replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/gm, ' ');
 
+export const tagsListingQuery = /* GraphQL */`
+query getTagsListing($maxCount: Int = 100) {
+  tagCollection(limit: $maxCount) {
+    items {
+      name
+      linkedFrom {
+        tagContentCollection(limit:1){
+          items {
+            linkedFrom {
+              pageCollection(limit: 1) {
+                items {
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
 export const latestPostsQuery = /* GraphQL */`
 query getLatestPosts($count: Int = 10) {
   postContentCollection(limit: $count, order:sys_firstPublishedAt_DESC) {
@@ -21,6 +44,18 @@ query getLatestPosts($count: Int = 10) {
         id
       }
       title
+      authorsCollection (limit:2){
+        items {
+          name
+          avatar {
+            image {
+              url
+            }
+            alternativeText
+          }
+        }
+      }
+
       heroImage {
         image {
           url
@@ -56,44 +91,16 @@ query getPage ($url: String!) {
         __typename
         ...on HomeContent {
           hiddenTitle
-          featuredPostsCollection(limit:5) {
+          featuredTagsCollection(limit:100){
             items {
-              sys {
-                id
-                updatedAt: publishedAt
-                publishedAt: firstPublishedAt
-              }
+              name
               linkedFrom {
-                pageCollection {
+                tagContentCollection(limit:1) {
                   items {
-                    url
-                  }
-                }
-              }
-              title
-              heroImage {
-                image {url}
-                alternativeText
-              }
-              standfirst{
-                json
-                links {
-                  entries {
-                    inline {
-                      ...on PostContent {
-                        title
-                        heroImage {
-                          image {
-                            url
-                          }
-                          alternativeText
-                        }
-                        linkedFrom {
-                          pageCollection(limit:1) {
-                            items {
-                              url
-                            }
-                          }
+                    linkedFrom {
+                      pageCollection(limit:1) {
+                        items {
+                          url
                         }
                       }
                     }

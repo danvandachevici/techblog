@@ -1,5 +1,6 @@
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, MARKS } from "@contentful/rich-text-types";
+import { DateFormatter } from "utils/DateFormatter";
 
 
 const richTextFormattingOptions: any = {
@@ -21,7 +22,12 @@ export default function PostSummary({post, children}: any): React.ReactElement {
       className='w-full flex justify-left py-2 cursor-pointer'
     >
       <h2 className='text-3xl'>{post.title}</h2>
-      <h3 className='text-lg'>by Dan @ {post.sys.publishedAt}</h3>
+      <span>{post.authorsCollection.items.length > 1 ? "Authors" : "Author"} &nbsp;</span>
+      <div className="flex flex-wrap">
+        {post.authorsCollection.items.map((author: any) => (
+          <span className='text-lg w-full'>{author.name} @ {DateFormatter.formatDate(new Date(post.sys.publishedAt))}</span>
+        ))}
+      </div>
       {children}
     </a>
   );
@@ -29,15 +35,21 @@ export default function PostSummary({post, children}: any): React.ReactElement {
 export function PostSummaryWithStandfirst({post}: any): React.ReactElement {
   const postsElement = documentToReactComponents(post.standfirst.json, richTextFormattingOptions);
   return (
-    <a
-      href={post.linkedFrom.pageCollection.items[0].url} 
-      className='w-full flex justify-left py-4'
-    >
+    
       <div>
-        <h2 className='text-3xl'>{post.title}</h2>
-        <h3 className='text-lg'>by Dan @ {post.sys.publishedAt}</h3>
+        <a
+          href={post.linkedFrom.pageCollection.items[0].url} 
+          className='w-full flex justify-left py-4'
+        >
+          <h2 className='text-3xl'>{post.title}</h2>
+        </a>
+        <span>{post.authorsCollection.items.length > 1 ? "Authors" : "Author"} &nbsp;</span>
+        <div className="flex flex-wrap">
+        {post.authorsCollection.items.map((author: any) => (
+          <span className='text-lg w-full'>{author.name} @ {DateFormatter.formatDate(new Date(post.sys.publishedAt))}</span>
+        ))}
+      </div>
         <p>{postsElement}</p>
       </div>
-    </a>
   )
 }
