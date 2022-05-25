@@ -90,7 +90,10 @@ query getPage ($url: String!) {
       content {
         __typename
         ...on HomeContent {
-          hiddenTitle
+          title
+          description {
+            json
+          }
           featuredTagsCollection(limit:100){
             items {
               name

@@ -1,5 +1,5 @@
+import { fetchLatestPosts } from 'services/api/api.service';
 import { GraphQLService } from '../services/graphql/graphql.service';
-
 
 const formatPaths = (pages: any[]): any[] => {
   return pages.map((page: any) => {
@@ -28,7 +28,7 @@ const contentMapping: any = {
   },
   PostContent: (data: any) => {
     const Post = require('../templates/Post').default;
-    return <Post data={data} />;
+    return <Post post={data} />;
   }
 }
 
@@ -40,7 +40,13 @@ export default function PageComponent(data: any) {
     !!data.content.__typename && 
     !!contentMapping[data.content.__typename]
   ) {
-    return contentMapping[data.content.__typename](data);
+    return (
+      <div className='w-full h-screen flex justify-center bg-slate-800 text-slate-200 pt-10 overflow-scroll'>
+        <div className='w-full sm:w-3/4'>
+          {contentMapping[data.content.__typename](data)}
+        </div>
+      </div>
+    )
   }
 
   const Custom404 = require('../templates/404').default;
@@ -57,6 +63,16 @@ export function getStaticProps(context:any) {
   
   return graphqlService.getPageByUrl(url).then((data) => {
     
+    if (data.content.__typename === 'HomeContent') {
+      return fetchLatestPosts(1).then((latestPosts) => {
+        data.content.latestPosts = latestPosts;
+        return {
+          props: {
+            ...data
+          },
+        };
+      });
+    }
     return {
       props: {
         ...data
