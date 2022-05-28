@@ -11,7 +11,7 @@ const usePagedPosts = (page: number, initialPosts: any) => {
   const [posts, setPosts] = useState(initialPosts);
   const [serverError, setServerError] = useState<any>(null);
   const postsServiceUrl = `/api/posts?page=${page}`;
-  
+
   useEffect(() => {
     if (page === 1) {
       return;
@@ -34,7 +34,7 @@ const usePagedPosts = (page: number, initialPosts: any) => {
   }, [page]);
 
   return { isLoading, posts, serverError };
-}
+};
 const useTags = () => {
   const [tagsLoading, setTagsLoading] = useState(false);
   const [tags, setTags] = useState([]);
@@ -60,12 +60,14 @@ const useTags = () => {
   }, []);
 
   return { tagsLoading, tags, tagsServerError };
-}
+};
 
 export default function Homepage({ data }: any) {
-
   const [pageNumber, setPageNumber] = useState(1);
-  const { isLoading, posts, serverError } = usePagedPosts(pageNumber, data.content.latestPosts);
+  const { isLoading, posts, serverError } = usePagedPosts(
+    pageNumber,
+    data.content.latestPosts
+  );
   const { tagsLoading, tags, tagsServerError } = useTags();
 
   if (!posts.length) {
@@ -74,18 +76,23 @@ export default function Homepage({ data }: any) {
         <Head>
           <title>{data.metaTitle || data.content.title}</title>
           <meta
-            name="robots"
-            content={`${data.seoIndex ? 'index' : 'noindex'}, ${data.seoFollow ? 'follow' : 'nofollow'}`}
+            name='robots'
+            content={`${data.seoIndex ? 'index' : 'noindex'}, ${
+              data.seoFollow ? 'follow' : 'nofollow'
+            }`}
           />
         </Head>
         <div className='w-full flex justify-center'>
           <div className='w-3/4'>
-            <PageTitle title={data.content.title} standfirst={data.content.description} />
+            <PageTitle
+              title={data.content.title}
+              standfirst={data.content.description}
+            />
           </div>
         </div>
         <div>There are no posts yet. Stay tuned!</div>
       </>
-    )
+    );
   }
 
   return (
@@ -93,22 +100,31 @@ export default function Homepage({ data }: any) {
       <Head>
         <title>{data.metaTitle || data.content.title}</title>
         <meta
-          name="robots"
-          content={`${data.seoIndex ? 'index' : 'noindex'}, ${data.seoFollow ? 'follow' : 'nofollow'}`}
+          name='robots'
+          content={`${data.seoIndex ? 'index' : 'noindex'}, ${
+            data.seoFollow ? 'follow' : 'nofollow'
+          }`}
         />
       </Head>
       <div className='w-full flex'>
-        <PageTitle title={data.content.title} standfirst={data.content.description} />
+        <PageTitle
+          title={data.content.title}
+          standfirst={data.content.description}
+        />
       </div>
       <div className='w-full flex'>
-        { !!isLoading && <div>Loading...</div> }
-        { !!serverError && <div>{serverError.message}</div> }
-        { !isLoading && !serverError && (
-          <div className="w-full flex justify-center">
+        {!!isLoading && <div>Loading...</div>}
+        {!!serverError && <div>{serverError.message}</div>}
+        {!isLoading && !serverError && (
+          <div className='w-full flex justify-center'>
             <div className='w-full'>
               <ul className='flex flex-wrap'>
                 {posts.map((post: any) => (
-                  <li key={post.sys.id} className='mt-12 bg-slate-600 hover:bg-slate-700 rounded-xl p-4 w-full border-lime-200 hover:border-lime-400 border-2'>
+                  <li
+                    key={post.sys.id}
+                    className='mt-12 bg-slate-600 hover:bg-slate-700 rounded-xl\
+                     p-4 w-full border-lime-200 hover:border-lime-400 border-2'
+                  >
                     <PostSummaryWithStandfirst post={post} />
                   </li>
                 ))}

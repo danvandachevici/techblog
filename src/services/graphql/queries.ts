@@ -1,4 +1,4 @@
-export const pageListingQuery = /* GraphQL */`
+export const pageListingQuery = /* GraphQL */ `
 query pageListingQuery($count: Int = 10, $skip: Int = 0){
   pageCollection(limit: $count, skip: $skip) {
     items {
@@ -10,20 +10,23 @@ query pageListingQuery($count: Int = 10, $skip: Int = 0){
     }
   }
 }
-`.replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/gm, ' ');
+`
+  .replace(/(\r\n|\n|\r)/gm, '')
+  .replace(/\s+/gm, ' ');
 
-export const tagsListingQuery = /* GraphQL */`
-query getTagsListing($maxCount: Int = 100) {
-  tagCollection(limit: $maxCount) {
-    items {
-      name
-      linkedFrom {
-        tagContentCollection(limit:1){
-          items {
-            linkedFrom {
-              pageCollection(limit: 1) {
-                items {
-                  url
+export const tagsListingQuery = /* GraphQL */ `
+  query getTagsListing($maxCount: Int = 100) {
+    tagCollection(limit: $maxCount) {
+      items {
+        name
+        linkedFrom {
+          tagContentCollection(limit: 1) {
+            items {
+              linkedFrom {
+                pageCollection(limit: 1) {
+                  items {
+                    url
+                  }
                 }
               }
             }
@@ -32,10 +35,9 @@ query getTagsListing($maxCount: Int = 100) {
       }
     }
   }
-}
 `;
 
-export const latestPostsQuery = /* GraphQL */`
+export const latestPostsQuery = /* GraphQL */ `
 query getLatestPosts($count: Int = 10) {
   postContentCollection(limit: $count, order:sys_firstPublishedAt_DESC) {
     items {
@@ -75,9 +77,11 @@ query getLatestPosts($count: Int = 10) {
     }
   }
 }
-`.replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/gm, ' ');
+`
+  .replace(/(\r\n|\n|\r)/gm, '')
+  .replace(/\s+/gm, ' ');
 
-export const pageByUrlQuery = /* GraphQL */`
+export const pageByUrlQuery = /* GraphQL */ `
 query getPage ($url: String!) {
   pageCollection(limit:1, where:{url: $url}) {
     items {
@@ -124,9 +128,41 @@ query getPage ($url: String!) {
           }
           standfirst {
             json
+            links {
+              entries{
+                block {
+                  sys {
+                    id
+                  }
+                  __typename
+                  ...on Image{
+                    image {
+                      url
+                    }
+                    alternativeText
+                  }
+                }
+              }
+            }
           }
           content {
             json
+            links {
+              entries{
+                block {
+                  sys {
+                    id
+                  }
+                  __typename
+                  ...on Image{
+                    image {
+                      url
+                    }
+                    alternativeText
+                  }
+                }
+              }
+            }
           }
           authorsCollection (limit:2){
             items {
@@ -144,4 +180,6 @@ query getPage ($url: String!) {
     }
   }
 }
-`.replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/gm, ' ');
+`
+  .replace(/(\r\n|\n|\r)/gm, '')
+  .replace(/\s+/gm, ' ');
