@@ -1,3 +1,4 @@
+import ImageComponent from '@components/Image/Image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
 
@@ -19,14 +20,10 @@ export default function RichText({ json, links }: any) {
         const linkedItem = links.entries.block.find(
           (link: any) => link.sys.id === id
         );
-
-        // const { title, file, description } = fields;
-        // const { url } = file;
-        return (
-          <div>
-            <img src={linkedItem.image.url} alt={linkedItem.alternativeText} />
-          </div>
-        );
+        switch (linkedItem.__typename) {
+          case 'Image':
+            return <ImageComponent data={linkedItem} />;
+        }
       },
     },
     // renderText: (text: string) => text.replace('!', '?'),
