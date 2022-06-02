@@ -1,4 +1,4 @@
-export default function ImageComponent({ data }: any) {
+export default function PostEmbeddedImage({ data }: any) {
   return (
     <div className='px-8 my-12'>
       <img src={data.image.url} alt={data.alternativeText} />
